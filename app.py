@@ -27,15 +27,14 @@ driver = webdriver.Chrome('/usr/local/bin/chromedriver', options=options)
 
 
 while True:
-    try:
-        driver.get("https://alpariforex.org/en/invest/pamm/530350/#pamm-leverage")
-        # Get the captured network traffic
-        har = json.loads()['log']['entries']
 
-        # Iterate through the network requests and log the URLs
-        for entry in har:
-            print(entry['request']['url'])
-        driver.quit()
-    except:
-        pass
+    driver.get("https://alpariforex.org/en/invest/pamm/530350/#pamm-leverage")
+    # Get the captured network traffic
+    har = json.loads()['log']['entries']
+
+    # Iterate through the network requests and log the URLs
+    for entry in har:
+        print(entry['request']['url'])
+    driver.quit()
+
 # Stop the browser and proxy server
