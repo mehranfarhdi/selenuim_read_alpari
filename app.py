@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+from webdriver_manager.chrome import ChromeDriverManager
 
 # Define the proxy
 # proxy = Proxy({
@@ -16,7 +17,7 @@ import time
 # Set up the Chrome driver with the proxy
 options = webdriver.ChromeOptions()
 # options.add_argument('--proxy-server=%s' % proxy.socksProxy)
-driver = webdriver.Chrome(options=options)
+driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
 # Load the page
 driver.get("https://alpariforex.org/en/invest/pamm/530350/#pamm-leverage")
