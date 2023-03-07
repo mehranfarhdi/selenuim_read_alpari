@@ -51,6 +51,8 @@ if __name__ == "__main__":
                 print(f"Caught {resp_url}")
                 data = driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": request_id})
                 parsed_body = json.loads(data['body'])
-                print(parsed_body)
-                send = requests.post("http://api.xfxfund.com/api/v1/brokers/broker/", json=parsed_body)
+                send = requests.post("https://api.xfxfund.com/api/v1/brokers/broker/", json=parsed_body)
+                json_data = send.json()
+                binary_data = send.content
+                print(binary_data)
         time.sleep(3600)
