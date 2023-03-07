@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     # Chrome will start in Headless mode
     options.add_argument('headless')
-    options.add_argument('--proxy-server=socks5://127.0.0.1:1080')
+    # options.add_argument('--proxy-server=socks5://127.0.0.1:1080')
     # Ignores any certificate errors if there is any
     options.add_argument("--ignore-certificate-errors")
 
