@@ -1,20 +1,38 @@
-FROM python:3.8-slim-buster
+FROM python:3.8
 
-RUN apt-get update && apt-get install -y wget gnupg2
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
-RUN apt-get update && apt-get install -y google-chrome-stable
+# Adding trusting keys to apt for repositories
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 
-RUN apt-get install -y curl unzip
-RUN curl -s https://chromedriver.storage.googleapis.com/87.0.4280.20/chromedriver_linux64.zip > /tmp/chromedriver_linux64.zip
-RUN unzip /tmp/chromedriver_linux64.zip chromedriver -d /usr/local/bin/
+# Adding Google Chrome to the repositories
+RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
 
-COPY requirements.txt /app/
+# Updating apt to see and install Google Chrome
+RUN apt-get -y update
+
+# Magic happens
+RUN apt-get install -y google-chrome-stable
+
+
+Copycopy code to clipboard
+# Installing Unzip
+RUN apt-get install -yqq unzip
+
+# Download the Chrome Driver
+RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`
+curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE
+`/chromedriver_linux64.zip
+
+# Unzip the Chrome Driver into /usr/local/bin directory
+RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
+
+# Set display port as an environment variable
+ENV DISPLAY=:99
+
+COPY . /app
 WORKDIR /app
+
+RUN pip install --upgrade pip
+
 RUN pip install -r requirements.txt
 
-COPY script.py /app/
-
-
-# Set the default command to run the Python script
-CMD [ "python", "script.py" ]
+CMD ["python", "./app.py"]
