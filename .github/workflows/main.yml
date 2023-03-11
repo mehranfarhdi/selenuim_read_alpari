@@ -54,4 +54,4 @@ jobs:
           script: |
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
             docker pull ghcr.io/mehranfarhdi/selenuim_read_alpari:latest
-            docker-compose -f /opt/alpari/docker-compose.yml up -d --force-recreate --remove-orphans
+            docker run ghcr.io/mehranfarhdi/selenuim_read_alpari:latest
