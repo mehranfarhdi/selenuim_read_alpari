@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     # Chrome will start in Headless mode
     options.add_argument('headless')
-    # options.add_argument('--proxy-server=socks5://127.0.0.1:1080')
+    options.add_argument('--proxy-server=socks5://127.0.0.1:1080')
     # Ignores any certificate errors if there is any
     options.add_argument("--ignore-certificate-errors")
 
@@ -27,6 +27,9 @@ if __name__ == "__main__":
                               desired_capabilities=desired_capabilities)
     # Send a request to the website and let it load
     while True:
+        pamm_data = None
+        leverage_data = None
+
         driver.get("https://alpariforex.org/en/invest/pamm/530350/#pamm-leverage")
 
         # Sleeps for 10 seconds
@@ -47,11 +50,18 @@ if __name__ == "__main__":
         for log in filter(log_filter, logs):
             request_id = log["params"]["requestId"]
             resp_url = log["params"]["response"]["url"]
+
             if (resp_url == "https://alpariforex.org/api/en/pamm/other/506176/active/"):
                 print(f"Caught {resp_url}")
                 data = driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": request_id})
                 parsed_body = json.loads(data['body'])
-                print(data['body'])
                 send = requests.post("https://api.xfxfund.com/api/v1/brokers/broker/", json=parsed_body)
+            if (resp_url == "https://alpariforex.org/chart/pamm/530350/leverage/daily.json?type=candle"):
+                print(f"Caught {resp_url}")
+                data = driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": request_id})
+                parsed_body = json.loads(data['body'])
+                parsed_body = parsed_body['data'][-1]
+                send = requests.post("https://api.xfxfund.com/api/v1/brokers/leverage/", json=parsed_body)
+
 
         time.sleep(3600)
